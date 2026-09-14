@@ -135,6 +135,9 @@ function renderSnippets() {
       <button class="secondary-btn" onclick="deleteSnippet('${snippet.id}')">
         <i class="fas fa-trash"></i> Delete
       </button>
+      <button class="secondary-btn gist-btn" onclick="shareToGist('${snippet.id}')">
+        <i class="fab fa-github"></i> Share to Gist
+      </button>
     </div>
   `;
 
@@ -389,3 +392,87 @@ document.getElementById('snippets-grid').addEventListener('click', (e) => {
   const code = snippetCard.querySelector('pre') ? snippetCard.querySelector('pre').textContent : '';
   if(code) openPreview(code);
 });
+
+function getGithubToken() {
+  let token = localStorage.getItem('githubPat');
+  if (!token) {
+    token = prompt(
+      'Enter a GitHub Personal Access Token (needs only the "gist" scope).\n' +
+      'Create one at https://github.com/settings/tokens'
+    );
+    if (token) {
+      localStorage.setItem('githubPat', token.trim());
+      token = token.trim();
+    }
+  }
+  return token;
+}
+
+async function shareToGist(id) {
+  const snippet = snippets.find(s => s.id === id);
+  if (!snippet) return;
+
+  const token = getGithubToken();
+  if (!token) return;
+
+  const button = document.querySelector(`.snippet-card[data-id="${id}"] .gist-btn`);
+  const originalHTML = button.innerHTML;
+  button.disabled = true;
+  button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sharing...';
+
+  const filename = `${snippet.title.replace(/[^a-z0-9._-]/gi, '_') || 'snippet'}.${extensionFor(snippet.category)}`;
+
+  try {
+    const response = await fetch('https://api.github.com/gists', {
+      method: 'POST',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        description: snippet.title,
+        public: false,
+        files: {
+          [filename]: { content: snippet.code }
+        }
+      })
+    });
+
+    if (response.status === 401) {
+      localStorage.removeItem('githubPat');
+      throw new Error('GitHub rejected the token (401). Please try again with a valid PAT.');
+    }
+    if (!response.ok) {
+      const errBody = await response.json().catch(() => ({}));
+      throw new Error(errBody.message || `GitHub API error (${response.status})`);
+    }
+
+    const data = await response.json();
+    button.innerHTML = '<i class="fas fa-check"></i> Gist Created!';
+    window.open(data.html_url, '_blank', 'noopener,noreferrer');
+
+    setTimeout(() => {
+      button.innerHTML = originalHTML;
+      button.disabled = false;
+    }, 3000);
+
+  } catch (err) {
+    console.error('Failed to create gist:', err);
+    alert(`Failed to create Gist: ${err.message}`);
+    button.innerHTML = originalHTML;
+    button.disabled = false;
+  }
+}
+
+function extensionFor(category) {
+  const map = {
+    javascript: 'js', js: 'js', python: 'py', java: 'java',
+    html: 'html', css: 'css', json: 'json', cpp: 'cpp', c: 'c',
+    typescript: 'ts', ts: 'ts', bash: 'sh', shell: 'sh', ruby: 'rb',
+    go: 'go', php: 'php', sql: 'sql'
+  };
+  return map[category?.toLowerCase()] || 'txt';
+}
+
+window.shareToGist = shareToGist;
