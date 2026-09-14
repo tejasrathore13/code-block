@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code-Block</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+</head>
+
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <button id="toggle-sidebar" class="toggle-sidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2>Snippets</h2>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="sidebar-section">
+          <button id="add-snippet-sidebar" class="add-snippet-btn">
+            <i class="fas fa-plus"></i> New Snippet
+          </button>
+        </div>
+
+        <div class="sidebar-section">
+          <h3>Categories</h3>
+          <ul class="category-list" id="category-list">
+            <li data-category="all" class="active">All Snippets</li>
+            <!-- Categories will be added dynamically -->
+          </ul>
+        </div>
+
+        <div class="sidebar-section theme-section">
+          <h3>Theme</h3>
+          <div class="theme-toggle-container">
+            <span><i class="fas fa-sun"></i></span>
+            <div class="theme-toggle" id="theme-toggle">
+              <div class="toggle-slider"></div>
+            </div>
+            <span><i class="fas fa-moon"></i></span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+      <header>
+        <div class="header-content">
+          <h1>CODEVAULT</h1>
+          <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="search" placeholder="Search snippets...">
+          </div>
+          <div class="actions">
+            <button id="add-snippet" class="primary-btn">Add Snippet</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="content-area">
+        <div class="snippets-grid" id="snippets-grid">
+          <!-- Snippets will be dynamically added here -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Modal for adding/editing snippets -->
+  <div class="modal-overlay" id="snippet-modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Add New Snippet</h2>
+        <button class="close-modal" id="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="snippet-form">
+          <input type="hidden" id="snippet-id">
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" required>
+          </div>
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" required>
+              <option value="">Select a category</option>
+              <option value="HTML">HTML</option>
+              <option value="CSS">CSS</option>
+              <option value="JavaScript">JavaScript</option>
+              <option value="Python">Python</option>
+              <option value="Java">Java</option>
+              <option value="C">C</option>
+              <option value="C++">C++</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="code">Code</label>
+            <textarea id="code" required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="secondary-btn" id="cancel-snippet">Cancel</button>
+        <button class="primary-btn" id="save-snippet">Save Snippet</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</body>
+
+</html>
+
+.snippets-grid pre {
+overflow-x: auto;
+white-space: pre;
+max-width: 100%;
+display: block;
+padding: 10px;
+box-sizing: border-box;
+}
+
+<div class="modal-overlay" id="preview-modal-overlay" style="display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Code Preview</h2>
+      <button class="close-modal" id="close-preview-modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <pre id="preview-code" class="hljs"></pre>
+    </div>
+  </div>
+</div>
+
+<div class="snippet-card" data-id="unique-id" draggable="true">
+  <!-- snippet content -->
+</div>
