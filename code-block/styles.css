@@ -406,6 +406,31 @@ h1 {
   font-size: 0.8rem;
 }
 
+.snippet-actions .secondary-btn {
+  background-color: transparent;
+  border: 1px solid currentColor;
+  color: var(--text-secondary);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.snippet-actions .copy-btn:hover {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+
+.snippet-actions .edit-btn:hover {
+  background-color: #4361ee;
+  border-color: #4361ee;
+  color: white;
+}
+
+.snippet-actions .delete-btn:hover {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;

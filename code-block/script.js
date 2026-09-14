@@ -131,10 +131,10 @@ function renderSnippets() {
       <button class="secondary-btn copy-btn" onclick="copyToClipboard('${snippet.id}')">
         <i class="fas fa-copy"></i> Copy
       </button>
-      <button class="secondary-btn" onclick="editSnippet('${snippet.id}')">
+      <button class="secondary-btn edit-btn" onclick="editSnippet('${snippet.id}')">
         <i class="fas fa-edit"></i> Edit
       </button>
-      <button class="secondary-btn" onclick="deleteSnippet('${snippet.id}')">
+      <button class="secondary-btn delete-btn" onclick="deleteSnippet('${snippet.id}')">
         <i class="fas fa-trash"></i> Delete
       </button>
     </div>
